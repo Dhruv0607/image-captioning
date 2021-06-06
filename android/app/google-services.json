@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "767799890816",
+    "project_id": "imagecaptioning-92f02",
+    "storage_bucket": "imagecaptioning-92f02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767799890816:android:ff9087bf8c604c95bb6765",
+        "android_client_info": {
+          "package_name": "com.example.image_caption"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "767799890816-lr2o1qqflqp28mvnkh4fc44v2s4oqli6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.image_caption",
+            "certificate_hash": "1ddbc6f0bc680c0f349c3b1042c231b5ff0b3cd7"
+          }
+        },
+        {
+          "client_id": "767799890816-8mp96bc09v8umclnc33h5po0b1tq097t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgq3BqtwwZ8aDiOyc1fFGnw4xAib-cFbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767799890816-8mp96bc09v8umclnc33h5po0b1tq097t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

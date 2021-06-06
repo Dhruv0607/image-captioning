@@ -1,9 +1,14 @@
 import 'package:adobe_xd/adobe_xd.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'final_page.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'global.dart' as global;
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_api.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -11,11 +16,15 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
+  UploadTask task;
+  File _image;
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final ImagePicker _picker = ImagePicker();
 
   Future getImage() async {
     final img = await _picker.getImage(source: ImageSource.gallery);
 
+    print(img);
     Alert(
             context: context,
             title: "Image Uploaded",
@@ -24,8 +33,27 @@ class _UploadPageState extends State<UploadPage> {
         .show();
 
     setState(() {
+      _image = File(img.path);
       global.image = img;
     });
+  }
+
+  Future uploadFile() async{
+    if (_image == null) return;
+    final destination = 'files/imgUpload';
+
+    task =FirebaseApi.uploadFile(destination, _image);
+
+    if (task == null) return;
+
+    final snapshot = await task.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    _firebaseFirestore.collection('Image').doc('uploadImage').set({
+      'imgLink' : urlDownload
+    });
+
+    print('Download link = $urlDownload');
   }
 
   @override
@@ -44,36 +72,34 @@ class _UploadPageState extends State<UploadPage> {
                   SizedBox(
                     width: 20,
                   ),
-                  PageLink(
-                    links: [
-                      PageLinkInfo(
-                        ease: Curves.easeOut,
-                        duration: 0.2,
-                        pageBuilder: () => FinalPage(),
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: (){
+                      uploadFile();
+                      print('Hello');
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> FinalPage(image: _image,)));
+                    },
                     child: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.elliptical(9999.0, 9999.0),
-                        ),
-                        color: const Color(0xFFFFFFFF),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0x29000000),
-                            offset: Offset(6, 6),
-                            blurRadius: 6,
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.elliptical(9999.0, 9999.0),
                           ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Color(0xBF0B1F51),
+                          color: const Color(0xFFFFFFFF),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0x29000000),
+                              offset: Offset(6, 6),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Color(0xBF0B1F51),
+                        ),
                       ),
                     ),
-                  ),
                   SizedBox(
                     height: 100,
                   ),
